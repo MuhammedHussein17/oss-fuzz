@@ -14,20 +14,17 @@
 # limitations under the License.
 #
 ################################################################################
-
 cd $SRC/onnx
-
 # Enable ONNX's built-in sanitizer support so the C++ extensions are
 # instrumented alongside the Python atheris layer.
 if [[ "$SANITIZER" == "address" || "$SANITIZER" == "undefined" ]]; then
   export CMAKE_ARGS="-DONNX_USE_ASAN=ON"
 fi
-
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" pip3 install --no-build-isolation .
 python3 $SRC/make_seed_corpus.py \
     $OUT/fuzz_version_converter_seed_corpus.zip \
-    $OUT/fuzz_parser_seed_corpus.zip
-
+    $OUT/fuzz_parser_seed_corpus.zip \
+    $OUT/fuzz_shape_inference_seed_corpus.zip
 # Build fuzzers in $OUT.
 for fuzzer in $(find $SRC -maxdepth 1 -name 'fuzz_*.py'); do
   compile_python_fuzzer $fuzzer
